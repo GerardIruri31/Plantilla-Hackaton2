@@ -1,9 +1,15 @@
 import { useState } from "react";
+import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
+import AuthForms from "./components/AuthForms";
 
 function App() {
   return (
     <>
-      <h1 className="bg-red-400"> Hola</h1>
+      <Router>
+        <Routes>
+          <Route path="/" element={<AuthForms />} />
+        </Routes>
+      </Router>
     </>
   );
 }
