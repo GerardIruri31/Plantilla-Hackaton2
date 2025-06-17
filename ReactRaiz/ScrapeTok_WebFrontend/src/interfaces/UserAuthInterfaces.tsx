@@ -1,9 +1,5 @@
 export interface User {
-  id: number;
   email: string;
-  password: string;
-  username: string;
-  role: string;
 }
 export interface AuthContextType {
   token: string | null;
@@ -13,10 +9,8 @@ export interface AuthContextType {
 }
 
 export interface UserAuthResponse {
-  id: number;
-  email: string;
-  password: string;
-  username: string;
-  token: string;
-  role: string;
+  result: {
+    token: string;
+    username: string;
+  };
 }
