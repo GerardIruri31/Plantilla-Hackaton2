@@ -7,8 +7,8 @@ const NavBar: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    setToken("");
-    setUser({ email: "" });
+    setToken(null);
+    setUser(null);
     navigate("/");
   };
 

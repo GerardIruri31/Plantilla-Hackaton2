@@ -1,46 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import axios from "axios";
-
-export const URL = import.meta.env.VITE_API_URL;
-
-// Tipo de categoría
-interface Category {
-  id: number;
-  name: string;
-}
+import { fetchCategories } from "../service/categoryService";
+import type { Category } from "../interfaces/Category";
 
 const ViewCategories: React.FC = () => {
   const { token } = useAuth();
-
   const [categories, setCategories] = useState<Category[]>([]);
 
-  // Traer categorías al montar
   useEffect(() => {
     if (!token) return;
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       try {
-        const { data } = await axios.get<Category[]>(
-          URL + `/expenses_category`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        const data = await fetchCategories(token);
         setCategories(data);
       } catch (error) {
         console.error("Error al cargar categorías", error);
       }
     };
-    fetchCategories();
+    fetchData();
   }, [token]);
 
   return (
     <div className="min-h-screen bg-gray-950 text-white px-4 py-10 flex justify-center">
       <div className="bg-gray-800 rounded-2xl shadow-xl w-full max-w-7xl p-8 space-y-6">
-        {/* Header con título y Logout */}
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold">Categorías de gastos</h1>
         </div>
 
-        {/* Grid de categorías */}
         {categories.length === 0 ? (
           <div className="text-center text-gray-400 py-10 text-lg">
             Cargando categorías...

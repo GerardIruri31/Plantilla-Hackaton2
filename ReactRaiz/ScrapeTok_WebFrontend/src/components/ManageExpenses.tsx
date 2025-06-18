@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import axios from "axios";
+import {
+  registerExpense,
+  deleteExpense } from "../service/expensesService";
+import type { Category } from "../interfaces/Category";
+import { fetchCategories } from "../service/categoryService";
 
-export const URL = import.meta.env.VITE_API_URL;
-
-interface Category {
-  id: number;
-  name: string;
-}
 
 const ManageExpenses: React.FC = () => {
   const { token } = useAuth();
@@ -29,54 +27,48 @@ const ManageExpenses: React.FC = () => {
   // Fetch categories on mount
   useEffect(() => {
     if (!token) return;
-    const fetchCategories = async () => {
-      try {
-        const res = await axios.get<Category[]>(`${URL}/expenses_category`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setCategories(res.data);
-        if (res.data.length > 0) setCategoryId(res.data[0].id);
-      } catch (err) {
-        console.error("Error al cargar categorías", err);
-      }
-    };
-    fetchCategories();
+    const fetchData = async () => {
+  try {
+    const data = await fetchCategories(token);
+    setCategories(data);
+    if (data.length > 0) setCategoryId(data[0].id);
+  } catch (err) {
+    console.error("Error al cargar categorías", err);
+  }
+};
+fetchData();
   }, [token]);
 
-  // Register new expense
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(
-        `${URL}/expenses`,
-        {
-          amount,
-          category: { id: categoryId },
-          date,
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      console.log(response);
-      setMessage("Gasto registrado correctamente.");
-    } catch (err) {
-      console.error("Error al registrar gasto", err);
-      setMessage("Error al registrar gasto.");
-    }
-  };
+ const handleRegister = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!token) {
+    setMessage("No hay sesión activa.");
+    return;
+  }
+  try {
+    await registerExpense(date, amount, categoryId, token);
+    setMessage("Gasto registrado correctamente.");
+  } catch (err) {
+    console.error("Error al registrar gasto", err);
+    setMessage("Error al registrar gasto.");
+  }
+};
+ 
+const handleDelete = async () => {
+  if (!token) {
+    setMessage("No hay sesión activa.");
+    return;
+  }
+  try {
+    await deleteExpense(deleteId, token);
+    setMessage("Gasto eliminado correctamente.");
+  } catch (err) {
+    console.error("Error al eliminar gasto", err);
+    setMessage("Error al eliminar gasto.");
+  }
+};
 
-  // Delete expense
-  const handleDelete = async () => {
-    try {
-      const response = await axios.delete(`${URL}/expenses/${deleteId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      console.log(response);
-      setMessage("Gasto eliminado correctamente.");
-    } catch (err) {
-      console.error("Error al eliminar gasto", err);
-      setMessage("Error al eliminar gasto.");
-    }
-  };
+
 
   return (
     <div className="min-h-screen bg-gray-950 text-white px-4 py-10 flex justify-center">

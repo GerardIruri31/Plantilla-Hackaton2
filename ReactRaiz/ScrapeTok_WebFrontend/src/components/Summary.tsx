@@ -1,17 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import axios from "axios";
-
-// Interfaz del backend
-export const URL = import.meta.env.VITE_API_URL;
-
-interface BackendExpenseSummaryItem {
-  id: number;
-  expenseCategory: { id: number; name: string };
-  year: number;
-  month: number;
-  amount: number;
-}
+import { fetchExpenseSummary } from "../service/expensesService";
+import type { BackendExpenseSummaryItem } from "../interfaces/Expense";
 
 // Interfaz para la UI
 interface ExpenseSummaryItem {
@@ -23,7 +13,6 @@ interface ExpenseSummaryItem {
 const Summary: React.FC = () => {
   const { token } = useAuth();
   const [rawData, setRawData] = useState<BackendExpenseSummaryItem[]>([]);
-
   const [summary, setSummary] = useState<ExpenseSummaryItem[]>([]);
   const [selectedYear, setSelectedYear] = useState<number>(
     new Date().getFullYear()
@@ -33,31 +22,17 @@ const Summary: React.FC = () => {
   );
 
   const months = [
-    "Enero",
-    "Febrero",
-    "Marzo",
-    "Abril",
-    "Mayo",
-    "Junio",
-    "Julio",
-    "Agosto",
-    "Septiembre",
-    "Octubre",
-    "Noviembre",
-    "Diciembre",
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
   ];
 
-  // Obtener y agrupar datos al cambiar año/mes
   // 1. Traer todos los registros una sola vez (cuando cambia el token)
   useEffect(() => {
     if (!token) return;
     const fetchAll = async () => {
       try {
-        const response = await axios.get<BackendExpenseSummaryItem[]>(
-          URL + "/expenses_summary",
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        setRawData(response.data);
+        const data = await fetchExpenseSummary(token);
+        setRawData(data);
       } catch (error) {
         console.error("Error al cargar datos crudos", error);
       }
@@ -93,7 +68,6 @@ const Summary: React.FC = () => {
       <div className="bg-gray-800 rounded-2xl shadow-xl w-full max-w-7xl p-8 space-y-8">
         {/* === HEADER === */}
         <div className="relative mb-6">
-          {/* Bloque centrado */}
           <div className="text-center">
             <h1 className="text-3xl font-bold">Resumen de gastos</h1>
             <p className="text-lg text-gray-300">
@@ -102,7 +76,6 @@ const Summary: React.FC = () => {
               {selectedYear}
             </p>
           </div>
-          {/* Selects en absolute top-right */}
           <div className="absolute top-0 right-0 flex items-center gap-4">
             <select
               value={selectedMonth}

@@ -1,8 +1,8 @@
 import React, { type FormEvent, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import axios, { AxiosError } from "axios";
-import { type UserAuthResponse } from "../interfaces/UserAuthInterfaces";
 import { useNavigate } from "react-router-dom";
+import { login, register } from "../service/authService";
+import axios, { AxiosError } from "axios";
 
 // Animated gradient keyframes
 const GradientStyles = () => (
@@ -31,41 +31,30 @@ const AuthForm: React.FC = () => {
     e.preventDefault();
 
     try {
-      const body: { email: string; passwd: string } = {
-        email,
-        passwd: password,
-      };
-      if (mode === "login") {
-        const { data } = await axios.post<UserAuthResponse>(
-          URL + "/authentication/login",
-          body
-        );
-        const { token } = data.result;
-        setToken(token);
-        setUser({ email });
-        navigate("/expenses_summary");
-      } else {
-        if (password.length < 12) {
-          alert("⚠️ Passwords mínimo 12 caracteres");
-          return;
-        }
-        // Solo retorna data: "OK"
-        await axios.post<UserAuthResponse>(
-          URL + "/authentication/register",
-          body
-        );
-        navigate("/expenses_summary");
-      }
-    } catch (err: unknown) {
-      if (axios.isAxiosError(err)) {
-        console.error("Axios Error:", err.response?.data || err.message);
-        throw new AxiosError("Axios Error: " + err.message, err.code);
-      } else if (err instanceof Error) {
-        throw new Error("Server Error: " + err.message);
-      } else {
-        throw new Error("Server Error desconocido");
-      }
+  if (mode === "login") {
+    const data = await login(email, password);
+    const { token } = data.result;
+    setToken(token);
+    setUser({ email });
+    navigate("/expenses_summary");
+  } else {
+    if (password.length < 12) {
+      alert("⚠️ Passwords mínimo 12 caracteres");
+      return;
     }
+    await register(email, password);
+    navigate("/expenses_summary");
+  }
+} catch (err: unknown) {
+  if (axios.isAxiosError(err)) {
+    console.error("Axios Error:", err.response?.data || err.message);
+    throw new AxiosError("Axios Error: " + err.message, err.code);
+  } else if (err instanceof Error) {
+    throw new Error("Server Error: " + err.message);
+  } else {
+    throw new Error("Server Error desconocido");
+  }
+}
   };
 
   return (

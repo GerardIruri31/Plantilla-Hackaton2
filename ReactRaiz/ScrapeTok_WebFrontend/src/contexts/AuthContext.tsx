@@ -8,7 +8,7 @@ import React, {
 import {
   type User,
   type AuthContextType,
-} from "../interfaces/UserAuthInterfaces";
+} from "../interfaces/User";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 

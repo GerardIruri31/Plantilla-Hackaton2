@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
+import type { BackendExpenseDetailItem } from "../interfaces/Expense";
 
 // Mapping de categorías estático
 export const URL = import.meta.env.VITE_API_URL;
@@ -28,13 +29,6 @@ const categorias: Record<number, string> = {
   20: "Otros gastos personales",
 };
 
-// Detalle individual de gasto
-interface BackendExpenseDetailItem {
-  id: number;
-  date: string;
-  category: { id: number; name: string };
-  amount: number;
-}
 
 const Gastos: React.FC = () => {
   const { token } = useAuth();
