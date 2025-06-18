@@ -1,12 +1,21 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import NavBar from "../components/NavBar";
 
-const ProtectedLayout: React.FC = () => (
-  <>
-    <NavBar />
-    <Outlet />
-  </>
-);
+const ProtectedLayout: React.FC = () => {
+  const { token } = useAuth();
+
+  // Si no hay token, redirige al login
+  if (!token) {
+    return <Navigate to="/" replace />;
+  }
+  return (
+    <>
+      <NavBar />
+      <Outlet />
+    </>
+  );
+};
 
 export default ProtectedLayout;
