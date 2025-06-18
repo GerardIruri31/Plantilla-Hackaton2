@@ -25,61 +25,36 @@ const AuthForm: React.FC = () => {
   const [mode, setMode] = useState<FormMode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  //const [firstname, setFirstname] = useState("");
-  //const [lastname, setLastname] = useState("");
-  //const [username, setUsername] = useState("");
-  //const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
+      const body: { email: string; passwd: string } = {
+        email,
+        passwd: password,
+      };
       if (mode === "login") {
-        // Login
-        const body: { email: string; passwd: string } = {
-          email,
-          passwd: password,
-        };
-
         const { data } = await axios.post<UserAuthResponse>(
           URL + "/authentication/login",
           body
         );
-
-        // Extraemos token y email de la propiedad data
         const { token } = data.result;
-
         setToken(token);
-        // Ahora setUser recibe un objeto User { email, passwd }
         setUser({ email });
-        console.log("RESPUESTA");
-        //console.log("Logging in with", { userEmail, password });
-        navigate("/temp");
+        navigate("/expenses_summary");
       } else {
-        // Sign Up
         if (password.length < 12) {
           alert("⚠️ Passwords mínimo 12 caracteres");
           return;
         }
-
-        const body: { email: string; password: string } = {
-          email,
-          password,
-        };
-
-        const { data } = await axios.post<UserAuthResponse>(
+        // Solo retorna data: "OK"
+        await axios.post<UserAuthResponse>(
           URL + "/authentication/register",
           body
         );
-
-        const { token } = data.result;
-
-        setToken(token);
-        setUser({ email });
-
-        //console.log("Signing up with", { , password });
-        navigate("/temp");
+        navigate("/expenses_summary");
       }
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
