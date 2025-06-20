@@ -8,13 +8,13 @@ import {
 
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
-import Dashboard from "../pages/Dashboard";
 import CategoryDetail from "../pages/CategoryDetail";
 
 import Summary from "../components/Summary";
 import ViewCategories from "../components/ViewCategories";
 import ManageExpenses from "../components/ManageExpenses";
 import ProtectedLayout from "../components/ProtectedLayout";
+import Gastos from "../components/Gastos";
 
 const AppRouter: React.FC = () => {
   return (
@@ -27,7 +27,7 @@ const AppRouter: React.FC = () => {
         {/* Rutas privadas protegidas por layout */}
         <Route element={<ProtectedLayout />}>
           <Route path="/expenses_summary" element={<Summary />} />
-          <Route path="/expenses_details" element={<Dashboard />} />
+          <Route path="/expenses_details" element={<Gastos />} />
           <Route path="/expenses_category" element={<ViewCategories />} />
           <Route path="/manage_expenses" element={<ManageExpenses />} />
           <Route path="/category/:id" element={<CategoryDetail />} />

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { fetchExpenseSummary } from "../service/expensesService";
 import type { BackendExpenseSummaryItem } from "../interfaces/Expense";
+import { useNavigate } from "react-router-dom";
 
 // Interfaz para la UI
 interface ExpenseSummaryItem {
@@ -12,6 +13,7 @@ interface ExpenseSummaryItem {
 
 const Summary: React.FC = () => {
   const { token } = useAuth();
+  const navigate = useNavigate();
   const [rawData, setRawData] = useState<BackendExpenseSummaryItem[]>([]);
   const [summary, setSummary] = useState<ExpenseSummaryItem[]>([]);
   const [selectedYear, setSelectedYear] = useState<number>(
@@ -111,18 +113,19 @@ const Summary: React.FC = () => {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {summary.map((item) => (
               <div
-                key={item.categoryId}
-                className="bg-gray-700 border border-gray-600 rounded-lg p-4 cursor-pointer hover:bg-gray-600 transition"
-              >
-                <div className="flex justify-between items-center">
-                  <span className="capitalize font-medium">
-                    {item.categoryName}
-                  </span>
-                  <span className="font-bold text-green-400">
-                    S/ {item.amount.toFixed(2)}
-                  </span>
-                </div>
-              </div>
+  key={item.categoryId}
+  onClick={() => navigate(`/category/${item.categoryId}`)}
+  className="bg-gray-700 border border-gray-600 rounded-lg p-4 cursor-pointer hover:bg-gray-600 transition"
+>
+  <div className="flex justify-between items-center">
+    <span className="capitalize font-medium">
+      {item.categoryName}
+    </span>
+    <span className="font-bold text-green-400">
+      S/ {item.amount.toFixed(2)}
+    </span>
+  </div>
+</div>
             ))}
           </div>
         )}
