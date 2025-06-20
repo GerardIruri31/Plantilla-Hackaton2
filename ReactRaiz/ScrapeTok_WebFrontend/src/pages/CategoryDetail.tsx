@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { getExpensesByCategory } from "../service/expensesService";
 import type { BackendExpenseDetailItem } from "../interfaces/Expense";
+import { useParams, useSearchParams } from "react-router-dom";
+
+
 
 const CategoryDetail: React.FC = () => {
   const { token } = useAuth();
   const { id } = useParams<{ id: string }>();
   const categoryId = Number(id);
-
-  const [year, setYear] = useState<number>(new Date().getFullYear());
-  const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
+const [searchParams] = useSearchParams();
+const initialYear = Number(searchParams.get("year")) || new Date().getFullYear();
+const initialMonth = Number(searchParams.get("month")) || new Date().getMonth() + 1;
+const [year, setYear] = useState<number>(initialYear);
+const [month, setMonth] = useState<number>(initialMonth);
   const [details, setDetails] = useState<BackendExpenseDetailItem[]>([]);
 
   const months = [

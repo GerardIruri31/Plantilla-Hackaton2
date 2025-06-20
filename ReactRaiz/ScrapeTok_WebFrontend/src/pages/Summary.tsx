@@ -114,8 +114,11 @@ const Summary: React.FC = () => {
             {summary.map((item) => (
               <div
   key={item.categoryId}
-  onClick={() => navigate(`/category/${item.categoryId}`)}
-  className="bg-gray-700 border border-gray-600 rounded-lg p-4 cursor-pointer hover:bg-gray-600 transition"
+onClick={() =>
+  navigate(
+    `/category/${item.categoryId}?month=${selectedMonth}&year=${selectedYear}`
+  )
+}  className="bg-gray-700 border border-gray-600 rounded-lg p-4 cursor-pointer hover:bg-gray-600 transition"
 >
   <div className="flex justify-between items-center">
     <span className="capitalize font-medium">
