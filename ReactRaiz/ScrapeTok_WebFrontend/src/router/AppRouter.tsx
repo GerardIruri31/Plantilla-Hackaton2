@@ -14,7 +14,7 @@ import Summary from "../components/Summary";
 import ViewCategories from "../components/ViewCategories";
 import ManageExpenses from "../components/ManageExpenses";
 import ProtectedLayout from "../components/ProtectedLayout";
-import Gastos from "../components/Gastos";
+import Gastos from "../pages/Gastos";
 
 const AppRouter: React.FC = () => {
   return (
