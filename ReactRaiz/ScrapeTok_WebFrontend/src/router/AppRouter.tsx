@@ -10,9 +10,9 @@ import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import CategoryDetail from "../pages/CategoryDetail";
 
-import Summary from "../components/Summary";
-import ViewCategories from "../components/ViewCategories";
-import ManageExpenses from "../components/ManageExpenses";
+import Summary from "../pages/Summary";
+import ViewCategories from "../pages/ViewCategories";
+import ManageExpenses from "../pages/ManageExpenses";
 import ProtectedLayout from "../components/ProtectedLayout";
 import Gastos from "../pages/Gastos";
 
